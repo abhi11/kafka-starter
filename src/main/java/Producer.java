@@ -21,7 +21,7 @@ import java.util.Properties;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
-public class Producer extends Thread
+public class Producer/* extends Thread*/
 {
   private final kafka.javaapi.producer.Producer<Integer, String> producer;
   private final String topic;
@@ -35,16 +35,19 @@ public class Producer extends Thread
     // The message is of type String.
     producer = new kafka.javaapi.producer.Producer<Integer, String>(new ProducerConfig(props));
     this.topic = topic;
+    System.out.println("Producer at "+this.topic);
   }
   
-  public void run() {
+  public void putdata() {
     int messageNo = 1;
     while(messageNo < 100)
     {
       String messageStr = new String("Message_" + messageNo);
-      producer.send(new KeyedMessage<Integer, String>(topic, messageStr));
+      producer.send(new KeyedMessage<Integer, String>(topic ,messageStr));
       messageNo = messageNo +1;
     }
+    producer.close();
+    System.out.println("Producer exit");
   }
 
 }

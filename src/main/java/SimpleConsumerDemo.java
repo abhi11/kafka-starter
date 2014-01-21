@@ -43,9 +43,9 @@ public class SimpleConsumerDemo {
 
   private static void generateData() {
     Producer producer2 = new Producer(KafkaProperties.topic2);
-    producer2.run();
+    producer2.putdata();
     Producer producer3 = new Producer(KafkaProperties.topic3);
-    producer3.run();
+    producer3.putdata();
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
@@ -56,7 +56,7 @@ public class SimpleConsumerDemo {
   public static void main(String[] args) throws Exception {
       System.out.println("SimpleConsumer code....");
 
-      generateData();
+      //      generateData();
       
       SimpleConsumer simpleConsumer = new SimpleConsumer(KafkaProperties.kafkaServerURL,
                                                        KafkaProperties.kafkaServerPort,
@@ -67,20 +67,20 @@ public class SimpleConsumerDemo {
     System.out.println("Testing single fetch");
     FetchRequest req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch(KafkaProperties.topic2, 0, 0L, 100)
+            .addFetch(/*KafkaProperties.topic2*/"try2", 0, 0L, 100)
             .build();
     FetchResponse fetchResponse = simpleConsumer.fetch(req);
-      printMessages((ByteBufferMessageSet) fetchResponse.messageSet(KafkaProperties.topic2, 0));
+      printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2"/*KafkaProperties.topic2*/, 0));
 
     System.out.println("Testing single multi-fetch");
     Map<String, List<Integer>> topicMap = new HashMap<String, List<Integer>>() {{
-        put(KafkaProperties.topic2, new ArrayList<Integer>(){{ add(0); }});
-        put(KafkaProperties.topic3, new ArrayList<Integer>(){{ add(0); }});
+	    put(/*KafkaProperties.topic2*/"try2", new ArrayList<Integer>(){{ add(0); }});
+        put(/*KafkaProperties.topic3*/"try2", new ArrayList<Integer>(){{ add(0); }});
     }};
     req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch(KafkaProperties.topic2, 0, 0L, 100)
-            .addFetch(KafkaProperties.topic3, 0, 0L, 100)
+            .addFetch(/*KafkaProperties.topic2*/"try2", 0, 0L, 100)
+            .addFetch(/*KafkaProperties.topic3*/"try2", 0, 0L, 100)
             .build();
     fetchResponse = simpleConsumer.fetch(req);
     int fetchReq = 0;

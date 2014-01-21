@@ -35,18 +35,21 @@ public class ProducerForMongo extends Thread
     {
 	props.put("serializer.class", "kafka.serializer.StringEncoder");
 	props.put("metadata.broker.list", "localhost:9092");
+	//props.put("partitioner.class", "example.producer.SimplePartitioner")
 	// Use random partitioner. Don't need the key type. Just set it to Integer.
 	// The message is of type String.
 	producer = new kafka.javaapi.producer.Producer<Integer, String>(new ProducerConfig(props));
 	this.topic = topic;
     }
   
-    public void run(String messageStr) {
+    public void putdata(String messageStr) {
 	msgno = msgno +1;
-	producer.send(new KeyedMessage<Integer, String>(topic, messageStr));
+	producer.send(new KeyedMessage<Integer, String>(topic,1,messageStr));
 	msgno = msgno + 1;
 	System.out.println("Message No "+msgno+" Message : "+messageStr);
     }
-  
+    public void close(){
+	producer.close();
+    }
 
 }

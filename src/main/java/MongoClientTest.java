@@ -1,6 +1,6 @@
 /*
-  Retrieves data from mongo. All the tweets in json format.
-  To be used by the kafka producer and conusmed by a storm-topology.
+ * Retrieves data from mongo. All the tweets in json format.
+ * To be used by the kafka producer and conusmed by a storm-topology.
  */
 
 package kafka.examples;
@@ -33,9 +33,10 @@ class MongoClientTest {
 		    while(cur.hasNext()){
 			DBObject obj = cur.next();
 			String	messageStr = obj.toString();
-			pro.run(messageStr);
+			pro.putdata(messageStr);
 			System.out.println(messageStr);
 		    }
+		    pro.close();
 		}
 		finally{
 		    cur.close();

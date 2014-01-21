@@ -20,11 +20,10 @@ public class KafkaConsumerProducerDemo implements KafkaProperties
 {
   public static void main(String[] args)
   {
-    Producer producerThread = new Producer(KafkaProperties.topic);
-    producerThread.start();
-
-    Consumer consumerThread = new Consumer(KafkaProperties.topic);
-    consumerThread.start();
-    
+    Producer producerThread = new Producer("try3");
+    producerThread.putdata();
+    //    System.out.println("In main");
+    //    Consumer consumerThread = new Consumer("try2");
+    //    consumerThread.start();
   }
 }
