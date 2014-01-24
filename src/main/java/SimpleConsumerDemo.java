@@ -32,64 +32,42 @@ import java.util.Map;
 
 public class SimpleConsumerDemo {
     
-  private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
-    for(MessageAndOffset messageAndOffset: messageSet) {
-      ByteBuffer payload = messageAndOffset.message().payload();
-      byte[] bytes = new byte[payload.limit()];
-      payload.get(bytes);
-      System.out.println(new String(bytes, "UTF-8"));
+    private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
+	for(MessageAndOffset messageAndOffset: messageSet) {
+	    ByteBuffer payload = messageAndOffset.message().payload();
+	    byte[] bytes = new byte[payload.limit()];
+	    payload.get(bytes);
+	    System.out.println(new String(bytes, "UTF-8"));
+	}
     }
-  }
-
-  private static void generateData() {
-    Producer producer2 = new Producer(KafkaProperties.topic2);
-    producer2.putdata();
-    Producer producer3 = new Producer(KafkaProperties.topic3);
-    producer3.putdata();
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
   
-  public static void main(String[] args) throws Exception {
-      System.out.println("SimpleConsumer code....");
+    public static void main(String[] args) throws Exception {
+	System.out.println("SimpleConsumer code....");
 
-      //      generateData();
+	//      generateData();
       
-      SimpleConsumer simpleConsumer = new SimpleConsumer(KafkaProperties.kafkaServerURL,
-                                                       KafkaProperties.kafkaServerPort,
-                                                       KafkaProperties.connectionTimeOut,
-                                                       KafkaProperties.kafkaProducerBufferSize,
-                                                       KafkaProperties.clientId);
+	SimpleConsumer simpleConsumer = new SimpleConsumer(KafkaProperties.kafkaServerURL,
+							   KafkaProperties.kafkaServerPort,
+							   KafkaProperties.connectionTimeOut,
+							   KafkaProperties.kafkaProducerBufferSize,
+							   KafkaProperties.clientId);
 
-    System.out.println("Testing single fetch");
-    FetchRequest req = new FetchRequestBuilder()
+	System.out.println("Fetching partition 0");
+	FetchRequest req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch(/*KafkaProperties.topic2*/"try2", 0, 0L, 100)
+            .addFetch("try2", 0, 0L, 1000)
             .build();
-    FetchResponse fetchResponse = simpleConsumer.fetch(req);
-      printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2"/*KafkaProperties.topic2*/, 0));
+	FetchResponse fetchResponse = simpleConsumer.fetch(req);
+	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", 0));
 
-    System.out.println("Testing single multi-fetch");
-    Map<String, List<Integer>> topicMap = new HashMap<String, List<Integer>>() {{
-	    put(/*KafkaProperties.topic2*/"try2", new ArrayList<Integer>(){{ add(0); }});
-        put(/*KafkaProperties.topic3*/"try2", new ArrayList<Integer>(){{ add(0); }});
-    }};
-    req = new FetchRequestBuilder()
+	System.out.println("Fetching partition 1");
+	req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch(/*KafkaProperties.topic2*/"try2", 0, 0L, 100)
-            .addFetch(/*KafkaProperties.topic3*/"try2", 0, 0L, 100)
+            .addFetch("try2", 1, 0L, 1000)
             .build();
-    fetchResponse = simpleConsumer.fetch(req);
-    int fetchReq = 0;
-    for ( Map.Entry<String, List<Integer>> entry : topicMap.entrySet() ) {
-      String topic = entry.getKey();
-      for ( Integer offset : entry.getValue()) {
-        System.out.println("Response from fetch request no: " + ++fetchReq);
-        printMessages((ByteBufferMessageSet) fetchResponse.messageSet(topic, offset));
-      }
+	fetchResponse = simpleConsumer.fetch(req);
+	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", 1));
+
+
     }
-  }
 }
