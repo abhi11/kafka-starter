@@ -30,9 +30,28 @@ import kafka.message.MessageAndOffset;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleConsumerDemo {
+public class SimpleConsumerDemo extends Thread {
     
-    private static void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
+    private final Integer pno;
+    SimpleConsumerDemo(Integer pno){
+	//	t= new Thread();
+	this.pno = new Integer(pno);
+	System.out.println("thread for partition "+this.pno);
+	//	t.start();
+    }
+    public void run(){
+	try{
+	    fetchdata();
+	    try{
+		Thread.sleep(1000);
+	    }
+	    catch(Exception e){
+	    }
+	}
+	catch(Exception e){
+	}
+    }
+    private /*static*/ void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
 	for(MessageAndOffset messageAndOffset: messageSet) {
 	    ByteBuffer payload = messageAndOffset.message().payload();
 	    byte[] bytes = new byte[payload.limit()];
@@ -41,10 +60,8 @@ public class SimpleConsumerDemo {
 	}
     }
   
-    public static void main(String[] args) throws Exception {
+    private /*static*/ void fetchdata() throws Exception {
 	System.out.println("SimpleConsumer code....");
-
-	//      generateData();
       
 	SimpleConsumer simpleConsumer = new SimpleConsumer(KafkaProperties.kafkaServerURL,
 							   KafkaProperties.kafkaServerPort,
@@ -52,14 +69,15 @@ public class SimpleConsumerDemo {
 							   KafkaProperties.kafkaProducerBufferSize,
 							   KafkaProperties.clientId);
 
-	System.out.println("Fetching partition 0");
+	System.out.println("Fetching partition "+pno);
 	FetchRequest req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch("try2", 0, 0L, 1000)
+            .addFetch("try2", pno, 0L, 1000)
             .build();
 	FetchResponse fetchResponse = simpleConsumer.fetch(req);
-	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", 0));
+	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", pno));
 
+	/*
 	System.out.println("Fetching partition 1");
 	req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
@@ -67,7 +85,7 @@ public class SimpleConsumerDemo {
             .build();
 	fetchResponse = simpleConsumer.fetch(req);
 	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", 1));
-
+	*/
 
     }
 }
