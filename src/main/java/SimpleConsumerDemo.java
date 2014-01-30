@@ -51,12 +51,12 @@ public class SimpleConsumerDemo extends Thread {
 	catch(Exception e){
 	}
     }
-    private /*static*/ void printMessages(ByteBufferMessageSet messageSet) throws UnsupportedEncodingException {
+    private /*static*/ void printMessages(ByteBufferMessageSet messageSet,Integer pno) throws UnsupportedEncodingException {
 	for(MessageAndOffset messageAndOffset: messageSet) {
 	    ByteBuffer payload = messageAndOffset.message().payload();
 	    byte[] bytes = new byte[payload.limit()];
 	    payload.get(bytes);
-	    System.out.println(new String(bytes, "UTF-8"));
+	    System.out.println(new String(bytes, "UTF-8")+" P: "+pno);
 	}
     }
   
@@ -75,7 +75,7 @@ public class SimpleConsumerDemo extends Thread {
             .addFetch("try2", pno, 0L, 1000)
             .build();
 	FetchResponse fetchResponse = simpleConsumer.fetch(req);
-	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", pno));
+	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", pno),pno);
 
 	/*
 	System.out.println("Fetching partition 1");
