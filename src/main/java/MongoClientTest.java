@@ -22,7 +22,7 @@ class MongoClientTest {
     //ProducerForMongo pro;
     
     public static void main(String[] args){
-	ProducerForMongo pro = new ProducerForMongo("Twitter");
+	ProducerForMongo pro = new ProducerForMongo("try2");
 	try
 	    {
 		Mongo mc = new Mongo("localhost",27017);

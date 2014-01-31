@@ -53,10 +53,11 @@ public class SimpleConsumerDemo extends Thread {
     }
     private /*static*/ void printMessages(ByteBufferMessageSet messageSet,Integer pno) throws UnsupportedEncodingException {
 	for(MessageAndOffset messageAndOffset: messageSet) {
+	    long coffset = messageAndOffset.offset();
 	    ByteBuffer payload = messageAndOffset.message().payload();
 	    byte[] bytes = new byte[payload.limit()];
 	    payload.get(bytes);
-	    System.out.println(new String(bytes, "UTF-8")+" P: "+pno);
+	    System.out.println(new String(bytes, "UTF-8")+" P: "+this.pno+" and offset "+coffset);
 	}
     }
   
@@ -69,10 +70,10 @@ public class SimpleConsumerDemo extends Thread {
 							   KafkaProperties.kafkaProducerBufferSize,
 							   KafkaProperties.clientId);
 
-	System.out.println("Fetching partition "+pno);
+	System.out.println("Fetching partition "+this.pno);
 	FetchRequest req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch("try2", pno, 0L, 1000)
+            .addFetch("try2", this.pno, 0L, 2000)
             .build();
 	FetchResponse fetchResponse = simpleConsumer.fetch(req);
 	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", pno),pno);

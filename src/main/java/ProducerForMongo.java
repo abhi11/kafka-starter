@@ -44,7 +44,7 @@ public class ProducerForMongo extends Thread
   
     public void putdata(String messageStr) {
 	msgno = msgno +1;
-	producer.send(new KeyedMessage<Integer, String>(topic,1,messageStr));
+	producer.send(new KeyedMessage<Integer, String>(topic,messageStr));
 	msgno = msgno + 1;
 	System.out.println("Message No "+msgno+" Message : "+messageStr);
     }
