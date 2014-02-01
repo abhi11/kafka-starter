@@ -73,10 +73,10 @@ public class SimpleConsumerDemo extends Thread {
 	System.out.println("Fetching partition "+this.pno);
 	FetchRequest req = new FetchRequestBuilder()
             .clientId(KafkaProperties.clientId)
-            .addFetch("try2", this.pno, 0L, 2000)
+            .addFetch(KafkaProperties.topic, this.pno, 0L, 2000)
             .build();
 	FetchResponse fetchResponse = simpleConsumer.fetch(req);
-	printMessages((ByteBufferMessageSet) fetchResponse.messageSet("try2", pno),pno);
+	printMessages((ByteBufferMessageSet) fetchResponse.messageSet(KafkaProperties.topic, pno),pno);
 
 	/*
 	System.out.println("Fetching partition 1");
