@@ -22,12 +22,12 @@ class MongoClientTest {
     //ProducerForMongo pro;
     
     public static void main(String[] args){
-	ProducerForMongo pro = new ProducerForMongo("try2");
+	ProducerForMongo pro = new ProducerForMongo("topic1");
 	try
 	    {
 		Mongo mc = new Mongo("localhost",27017);
-		DB db = mc.getDB("test_database");
-		DBCollection coll = db.getCollection("try1");
+		DB db = mc.getDB("trends");
+		DBCollection coll = db.getCollection("tweets");
 		DBCursor cur = coll.find();
 		try{
 		    while(cur.hasNext()){
